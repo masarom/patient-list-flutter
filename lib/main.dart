@@ -11,16 +11,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Color(0x38509bff)),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x38509bff)),
           useMaterial3: true,
           fontFamily: 'FuturaBT Medium Condensed'),
-      home: LandingPage(),
+      home: const LandingPage(),
     );
   }
 }
 
 // Start page
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
   @override
   Widget build(BuildContext context) {
     // Using Scaffold to make easier use of widgets
@@ -54,7 +55,10 @@ class LandingPage extends StatelessWidget {
                   width: 300,
                   child: ElevatedButton(
                     onPressed: () {
-                      print('clic!');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainPage()));
                     },
                     child: const Text(
                       'Start',
@@ -68,5 +72,14 @@ class LandingPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Column(children: [Text('Main page')]));
   }
 }
