@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -75,11 +76,56 @@ class LandingPage extends StatelessWidget {
   }
 }
 
+// Main page
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: Column(children: [Text('Main page')]));
+    // Adding updated date to appbar
+    final currentDate = DateTime.now();
+    /*  Simplified format:
+        final formattedDate =
+        '${currentDate.day}/${currentDate.month}/${currentDate.year}'; */
+    final formattedDate = DateFormat.yMMMMd().format(currentDate);
+    // colors
+    final appBarTextColor = Theme.of(context).colorScheme.primary;
+
+    return Scaffold(
+        // adding widgets to edit the AppBar styles (shadow, borders)
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFEBEBEB),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(30.0),
+                bottomRight: Radius.circular(30.0),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  offset: const Offset(0, 4),
+                  blurRadius: 8.0,
+                ),
+              ],
+            ),
+            child: AppBar(
+              // adding a row to include different elements
+              title: Row(
+                // Making automatic space between elements
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Hi, Welcome', style: TextStyle(color: appBarTextColor)),
+                  Text(formattedDate),
+                ],
+              ),
+              backgroundColor: const Color(0xFFEBEBEB),
+              // Delete the "go back" default arrow
+              automaticallyImplyLeading: false,
+            ),
+          ),
+        ),
+        body: const Column(children: [Text('Main page')]));
   }
 }
