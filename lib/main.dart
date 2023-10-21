@@ -187,7 +187,7 @@ class MainPage extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: appBarTextColor,
           onPressed: () {
-            print('new patient');
+            print('new patient!');
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
