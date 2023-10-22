@@ -150,7 +150,8 @@ class MainPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, bottom: 150.0),
                     child: TextField(
                       decoration: InputDecoration(
                           hintText: 'Full name',
@@ -164,7 +165,8 @@ class MainPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  padding: const EdgeInsets.only(
+                      left: 8.0, right: 8.0, bottom: 150.0),
                   child: Container(
                     decoration: BoxDecoration(
                         color: appBarTextColor, shape: BoxShape.circle),
