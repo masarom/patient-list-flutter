@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,13 +10,17 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x38509bff)),
-          useMaterial3: true,
-          fontFamily: 'FuturaBT Medium Condensed'),
-      home: const LandingPage(),
+    return ChangeNotifierProvider(
+      create: (context) => PatientList(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: const Color(0x38509bff)),
+            useMaterial3: true,
+            fontFamily: 'FuturaBT Medium Condensed'),
+        home: const LandingPage(),
+      ),
     );
   }
 }
@@ -91,6 +96,9 @@ class MainPage extends StatelessWidget {
     // colors
     final appBarTextColor = Theme.of(context).colorScheme.primary;
 
+    // patients list update
+    final patientList = Provider.of<PatientList>(context);
+
     return Scaffold(
       // adding widgets to edit the AppBar styles (shadow, borders)
       appBar: PreferredSize(
@@ -131,7 +139,7 @@ class MainPage extends StatelessWidget {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         // Main title
         const Padding(
-          padding: EdgeInsets.only(bottom: 8.0),
+          padding: EdgeInsets.only(top: 60.0, bottom: 8.0),
           child: Text(
             'Patient List',
             style: TextStyle(
@@ -178,14 +186,17 @@ class MainPage extends StatelessWidget {
             ),
           ],
         ),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: PatientCard(
-            name: 'John',
-            surname: 'Doe',
-            birthDate: '01/01/1990',
-            gender: 'Male',
-          ),
+        Expanded(
+          child: ListView.builder(
+              itemCount: patientList.patients.length,
+              itemBuilder: (context, index) {
+                final patient = patientList.patients[index];
+                return PatientCard(
+                    name: patient.name,
+                    surname: patient.surname,
+                    birthDate: patient.birthDate,
+                    gender: patient.gender);
+              }),
         ),
       ])),
       // add new patient icon
@@ -231,6 +242,24 @@ class _NewPatientState extends State<NewPatient> {
   String _genderValue = 'Select one';
   // gender list
   List<String> genderList = ['Select one', 'Female', 'Male'];
+
+  //submit
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final name = nameController.text;
+      final surname = surnameController.text;
+      final birthDate = dateController.text;
+      final gender = _genderValue;
+
+      final patientList = Provider.of<PatientList>(context, listen: false);
+      patientList.addPatient(name, surname, birthDate, gender);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Patient successfully added')),
+      );
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,16 +364,9 @@ class _NewPatientState extends State<NewPatient> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                      }
+                      _submitForm();
                     },
-                    child: const Text('Submit'),
+                    child: const Text('Save'),
                   ),
                 ],
               ),
@@ -410,12 +432,31 @@ class PatientCard extends StatelessWidget {
   }
 }
 
-// edit patient
+// patients' list
 
+class PatientList extends ChangeNotifier {
+  List<PatientCard> patients = [];
+
+  void addPatient(
+      String name, String surname, String birthDate, String gender) {
+    final newPatient = PatientCard(
+      name: name,
+      surname: surname,
+      birthDate: birthDate,
+      gender: gender,
+    );
+
+    patients.add(newPatient);
+    notifyListeners();
+  }
+}
+
+// edit patient
 void editPatient() {
   print('edit patient');
 }
 
+// delete patient
 void deletePatient() {
   print('delete patient');
 }
