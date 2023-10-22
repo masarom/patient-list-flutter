@@ -192,6 +192,7 @@ class MainPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final patient = patientList.patients[index];
                 return PatientCard(
+                    index: index,
                     name: patient.name,
                     surname: patient.surname,
                     birthDate: patient.birthDate,
@@ -393,6 +394,7 @@ class _NewPatientState extends State<NewPatient> {
 
 // Patients' cards
 class PatientCard extends StatelessWidget {
+  final int index;
   final String name;
   final String surname;
   final String birthDate;
@@ -400,11 +402,18 @@ class PatientCard extends StatelessWidget {
 
   const PatientCard({
     super.key,
+    required this.index,
     required this.name,
     required this.surname,
     required this.birthDate,
     required this.gender,
   });
+
+  // delete patient
+  void _deletePatient(BuildContext context, int index) {
+    final patientList = Provider.of<PatientList>(context, listen: false);
+    patientList.removePatient(context, index);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -412,16 +421,20 @@ class PatientCard extends StatelessWidget {
       child: ListTile(
         title: Text('$name $surname'),
         subtitle: Text('Birthdate: $birthDate\nGender: $gender'),
-        trailing: const Row(
+        trailing: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
+            const IconButton(
               icon: Icon(Icons.edit),
               onPressed: editPatient,
             ),
-            IconButton(icon: Icon(Icons.delete), onPressed: deletePatient),
-            Icon(Icons.chevron_right),
+            IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  _deletePatient(context, index);
+                }),
+            const Icon(Icons.chevron_right),
           ],
         ),
         onTap: () {
@@ -440,6 +453,7 @@ class PatientList extends ChangeNotifier {
   void addPatient(
       String name, String surname, String birthDate, String gender) {
     final newPatient = PatientCard(
+      index: patients.length - 1,
       name: name,
       surname: surname,
       birthDate: birthDate,
@@ -449,14 +463,17 @@ class PatientList extends ChangeNotifier {
     patients.add(newPatient);
     notifyListeners();
   }
+
+  void removePatient(BuildContext context, int index) {
+    patients.removeAt(index);
+    notifyListeners();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Patient successfully removed')),
+    );
+  }
 }
 
 // edit patient
 void editPatient() {
   print('edit patient');
-}
-
-// delete patient
-void deletePatient() {
-  print('delete patient');
 }
