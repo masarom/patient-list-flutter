@@ -189,7 +189,8 @@ class MainPage extends StatelessWidget {
         child: FloatingActionButton(
           backgroundColor: appBarTextColor,
           onPressed: () {
-            print('new patient!');
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const NewPatient()));
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -202,5 +203,163 @@ class MainPage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
+  }
+}
+
+// Create new patient form
+class NewPatient extends StatefulWidget {
+  const NewPatient({super.key});
+
+  @override
+  State<NewPatient> createState() => _NewPatientState();
+}
+
+class _NewPatientState extends State<NewPatient> {
+  final _formKey = GlobalKey<FormState>();
+  // name controller
+  final nameController = TextEditingController();
+  // surname controller
+  final surnameController = TextEditingController();
+  // date controller
+  final dateController = TextEditingController();
+  // gender
+  String _genderValue = 'Select one';
+  // gender list
+  List<String> genderList = ['Select one', 'Female', 'Male'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), labelText: 'Name *'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter patient's name";
+                      }
+                      return null;
+                    }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                    controller: surnameController,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), labelText: 'Surname *'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter patient's surname";
+                      }
+                      return null;
+                    }),
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: dateController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Birthdate *',
+                      filled: true,
+                      suffixIcon: Icon(Icons.calendar_today),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () {
+                      _selectDate();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter patient's birthdate";
+                      }
+                      return null;
+                    },
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Gender *',
+                    ),
+                    items: genderList.map((oneGender) {
+                      return DropdownMenuItem(
+                        value: oneGender,
+                        child: SizedBox(child: Text(oneGender)),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          _genderValue = value!;
+                        },
+                      );
+                    },
+                    value: _genderValue,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    validator: (value) {
+                      if (value == null ||
+                          value.isEmpty ||
+                          value == 'Select one') {
+                        return "Please enter patient's gender";
+                      }
+                      return null;
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel')),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Validate returns true if the form is valid, or false otherwise.
+                      if (_formKey.currentState!.validate()) {
+                        // If the form is valid, display a snackbar. In the real world,
+                        // you'd often call a server or save the information in a database.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Processing Data')),
+                        );
+                      }
+                    },
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
+            ],
+          ))
+    ])));
+  }
+
+  Future<void> _selectDate() async {
+    var picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime.now());
+
+    if (picked != null) {
+      var rawDate = picked;
+      setState(() {
+        dateController.text = DateFormat.yMMMMd().format(rawDate);
+      });
+    }
   }
 }
