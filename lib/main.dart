@@ -128,61 +128,66 @@ class MainPage extends StatelessWidget {
       ),
       // Content
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        // Main title
+        const Padding(
+          padding: EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            'Patient List',
+            style: TextStyle(
+              fontSize: 24,
+            ),
+          ),
+        ),
+        const Padding(
+            padding: EdgeInsets.only(bottom: 58.0),
+            child: Text('There are no patients in the list yet',
+                style: TextStyle(fontSize: 20, color: Color(0x8b8b8bff)))),
+        // Search bar
+        Row(
           children: [
-            // Main title
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                'Patient List',
-                style: TextStyle(
-                  fontSize: 24,
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 40.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      hintText: 'Full name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      contentPadding: const EdgeInsets.all(13.0),
+                      hintStyle:
+                          const TextStyle(fontSize: 19.0, color: Colors.black)),
                 ),
               ),
             ),
-            const Padding(
-                padding: EdgeInsets.only(bottom: 58.0),
-                child: Text('There are no patients in the list yet',
-                    style: TextStyle(fontSize: 20, color: Color(0x8b8b8bff)))),
-            // Search bar
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, bottom: 150.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                          hintText: 'Full name',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          contentPadding: const EdgeInsets.all(13.0),
-                          hintStyle: const TextStyle(
-                              fontSize: 19.0, color: Colors.black)),
-                    ),
-                  ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 40.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: appBarTextColor, shape: BoxShape.circle),
+                child: IconButton(
+                  icon: const Icon(Icons.search, color: Colors.white),
+                  onPressed: () {
+                    // Lógica de búsqueda aquí
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 8.0, right: 8.0, bottom: 150.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: appBarTextColor, shape: BoxShape.circle),
-                    child: IconButton(
-                      icon: const Icon(Icons.search, color: Colors.white),
-                      onPressed: () {
-                        // Lógica de búsqueda aquí
-                      },
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),
-      ),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: PatientCard(
+            name: 'John',
+            surname: 'Doe',
+            birthDate: '01/01/1990',
+            gender: 'Male',
+          ),
+        ),
+      ])),
       // add new patient icon
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 32.0),
@@ -362,4 +367,55 @@ class _NewPatientState extends State<NewPatient> {
       });
     }
   }
+}
+
+// Patients' cards
+class PatientCard extends StatelessWidget {
+  final String name;
+  final String surname;
+  final String birthDate;
+  final String gender;
+
+  const PatientCard({
+    super.key,
+    required this.name,
+    required this.surname,
+    required this.birthDate,
+    required this.gender,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text('$name $surname'),
+        subtitle: Text('Birthdate: $birthDate\nGender: $gender'),
+        trailing: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: editPatient,
+            ),
+            IconButton(icon: Icon(Icons.delete), onPressed: deletePatient),
+            Icon(Icons.chevron_right),
+          ],
+        ),
+        onTap: () {
+          print('patient detail');
+        },
+      ),
+    );
+  }
+}
+
+// edit patient
+
+void editPatient() {
+  print('edit patient');
+}
+
+void deletePatient() {
+  print('delete patient');
 }
