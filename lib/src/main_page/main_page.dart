@@ -77,7 +77,7 @@ class MainPage extends StatelessWidget {
           ),
         ),
       ),
-      // Content
+      // Main page content
       body: Center(
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         // Main title
@@ -90,7 +90,7 @@ class MainPage extends StatelessWidget {
             ),
           ),
         ),
-        // Changing subtitle message with empty list and filled list
+        // Changing subtitle message with empty list and filled list with ternary operator
         Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 58.0),
             child: Text(
@@ -118,12 +118,14 @@ class MainPage extends StatelessWidget {
                       contentPadding: const EdgeInsets.all(13.0),
                       hintStyle: const TextStyle(
                           fontSize: 19.0, color: mainTextColor)),
+                  // calling filterPatients()
                   onChanged: (value) {
                     patientList.filterPatients(context, value);
                   },
                 ),
               ),
             ),
+            // filter search icon
             Padding(
               padding:
                   const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 40.0),
@@ -138,6 +140,7 @@ class MainPage extends StatelessWidget {
             ),
           ],
         ),
+        // Patients' card list
         Expanded(
           child: ListView.builder(
               itemCount: patientList.patients.length,
@@ -157,6 +160,7 @@ class MainPage extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 32.0),
         child: FloatingActionButton(
           backgroundColor: appBarTextColor,
+          // Icon functionality: display new patient form
           onPressed: () {
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const NewPatient()));

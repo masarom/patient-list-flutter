@@ -26,8 +26,9 @@ class _NewPatientState extends State<NewPatient> {
   // gender list
   List<String> genderList = ['Select one', 'Female', 'Male'];
 
-  //submit
+  // submit
   void _submitForm() {
+    // form validation
     if (_formKey.currentState!.validate()) {
       final name = nameController.text;
       final surname = surnameController.text;
@@ -36,10 +37,11 @@ class _NewPatientState extends State<NewPatient> {
 
       final patientList = Provider.of<PatientList>(context, listen: false);
       patientList.addPatient(name, surname, birthDate, gender);
-
+      // adding pop up message at correct submit
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Patient successfully added')),
       );
+      // return to main page
       Navigator.pop(context);
     }
   }
@@ -55,12 +57,14 @@ class _NewPatientState extends State<NewPatient> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // name field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                     controller: nameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), labelText: 'Name *'),
+                    // validation before sending request
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter patient's name";
@@ -68,12 +72,14 @@ class _NewPatientState extends State<NewPatient> {
                       return null;
                     }),
               ),
+              // Surname field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                     controller: surnameController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), labelText: 'Surname *'),
+                    // validation before sending request
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter patient's surname";
@@ -81,6 +87,7 @@ class _NewPatientState extends State<NewPatient> {
                       return null;
                     }),
               ),
+              // birthdate field
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -98,6 +105,7 @@ class _NewPatientState extends State<NewPatient> {
                     onTap: () {
                       _selectDate();
                     },
+                    // validation before sending request
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter patient's birthdate";
@@ -105,6 +113,7 @@ class _NewPatientState extends State<NewPatient> {
                       return null;
                     },
                   )),
+              // Gender field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: DropdownButtonFormField(
@@ -127,6 +136,7 @@ class _NewPatientState extends State<NewPatient> {
                     },
                     value: _genderValue,
                     icon: const Icon(Icons.keyboard_arrow_down),
+                    // validation before sending request
                     validator: (value) {
                       if (value == null ||
                           value.isEmpty ||
@@ -136,15 +146,18 @@ class _NewPatientState extends State<NewPatient> {
                       return null;
                     }),
               ),
+              // Cancel / Submit buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // Cancel (return to main page)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: ElevatedButton(
                         onPressed: () => Navigator.pop(context),
                         child: const Text('Cancel')),
                   ),
+                  // Submit (send info / execute _submitForm())
                   ElevatedButton(
                     onPressed: () {
                       _submitForm();
@@ -158,6 +171,8 @@ class _NewPatientState extends State<NewPatient> {
     ])));
   }
 
+// Date selection function
+// is an async/await function because we have to wait for users selection
   Future<void> _selectDate() async {
     var picked = await showDatePicker(
         context: context,

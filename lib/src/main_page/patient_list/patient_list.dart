@@ -18,28 +18,30 @@ class PatientList extends ChangeNotifier {
       birthDate: birthDate,
       gender: gender,
     );
-
+    // adding new patient too the list
     patients.add(newPatient);
+    // notify the rest of widgets
     notifyListeners();
-    print(patients);
   }
 
   // delete patients
   void removePatient(BuildContext context, int index) {
+    // remove patient corresponding to the index
     patients.removeAt(index);
     notifyListeners();
+    // pop up message
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Patient successfully removed')),
     );
   }
 
   // filter patients
-  // copy of patient list for the filter search
+  // copy of patient list for the filter search to avoid removal of patients while searching
   List<PatientCard> originalPatients = [];
   PatientList() {
     originalPatients = patients.toList();
   }
-
+  // function to call the copy with the whole list of patients when the search is empty
   void restoreOriginalList() {
     patients = originalPatients.toList();
     notifyListeners();
@@ -47,9 +49,11 @@ class PatientList extends ChangeNotifier {
 
   void filterPatients(BuildContext context, value) {
     final patientList = Provider.of<PatientList>(context, listen: false);
+    // calling the entire list of patients when search is empty
     if (value.isEmpty) {
       restoreOriginalList();
     } else {
+      // filter patients by name or surname
       List<PatientCard> filteredPatients =
           patientList.patients.where((patient) {
         final fullName = '${patient.name} ${patient.surname}'.toLowerCase();

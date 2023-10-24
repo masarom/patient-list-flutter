@@ -11,6 +11,7 @@ const mainColor = Color.fromARGB(255, 0, 19, 43);
 
 // Patients' cards
 class PatientCard extends StatelessWidget {
+  // Card variables
   final int index;
   final String name;
   final String surname;
@@ -32,6 +33,7 @@ class PatientCard extends StatelessWidget {
       margin: const EdgeInsets.all(8.0),
       color: appBarBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      // Card info goes here
       child: ListTile(
         title: Text(
           '$name $surname',
@@ -47,10 +49,12 @@ class PatientCard extends StatelessWidget {
             color: mainTextColor,
           ),
         ),
+        // Card icons (edit / delete / more)
         trailing: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
+            // edit patient
             const IconButton(
               icon: Icon(
                 Icons.edit,
@@ -58,6 +62,7 @@ class PatientCard extends StatelessWidget {
               ),
               onPressed: editPatient,
             ),
+            // delete patient
             IconButton(
                 icon: const Icon(
                   Icons.delete,
@@ -67,13 +72,20 @@ class PatientCard extends StatelessWidget {
                 onPressed: () {
                   deletePatient(context, index);
                 }),
-            const Icon(
-              Icons.chevron_right,
-              color: mainColor,
-              size: 38.0,
+            // more info
+            IconButton(
+              icon: const Icon(
+                Icons.chevron_right,
+                color: mainColor,
+                size: 38.0,
+              ),
+              onPressed: () {
+                print('patient detail');
+              },
             ),
           ],
         ),
+        // Card general tap makes the same function as Icon.chevrons_right
         onTap: () {
           print('patient detail');
         },
